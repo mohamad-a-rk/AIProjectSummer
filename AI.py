@@ -81,6 +81,56 @@ def winning_move(board, piece):
             if winner:
                 return winner
 
+############################
+
+
+def hurestic(board, piece):
+    # Check horizontal locations for win
+    count = 0
+    for c in range(COLUMN_COUNT - 3):
+        for r in range(ROW_COUNT):
+            winner = True
+            for i in range(4):
+                winner = ((board[r][c+i] == piece or board[r][c+i] == 0) and winner)
+                if not winner:
+                    break
+            if winner:
+                count += 1
+
+    # Check vertical locations for win
+    for c in range(COLUMN_COUNT):
+        for r in range(ROW_COUNT - 3):
+            winner = True
+            for i in range(ConnectNum):
+                winner = (winner and (board[r+i][c] == piece or board[r+i][c] == 0))
+                if not winner:
+                    break
+            if winner:
+                count += 1
+
+    # Check positively sloped diaganols
+    for c in range(COLUMN_COUNT - 3):
+        for r in range(ROW_COUNT - 3):
+            winner = True
+            for i in range(ConnectNum):
+                winner = (winner and (board[r + i][c+i] == piece or board[r+i][c+i] == 0))
+                if not winner:
+                    break
+            if winner:
+                count += 1
+
+    # Check negatively sloped diaganols
+    for c in range(COLUMN_COUNT - 3):
+        for r in range(ConnectNum-1, ROW_COUNT):
+            winner = True
+            for i in range(ConnectNum):
+                winner = (winner and (board[r - i][c + i] == piece or board[r - i][c + i] == 0))
+                if not winner:
+                    break
+            if winner:
+                count += 1
+    return count
+
 
 def draw_board(board):
     for c in range(COLUMN_COUNT):
