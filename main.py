@@ -6,7 +6,6 @@ from AI import *
 
 title_font = ('Comic Sans MS', 23)
 font_tuple = ('Comic Sans MS', 12)
-level = None
 
 
 def backward(main_label, widget):
@@ -16,11 +15,9 @@ def backward(main_label, widget):
 
 
 def choose_level(lev):
-    global level
-    level = lev
-    if level == "Easy":
+    if lev == 'Easy':
         play_game(EASY)
-    elif level == "Medium":
+    elif lev == 'Medium':
         play_game(MEDIUM)
     else:
         play_game(HARD)
