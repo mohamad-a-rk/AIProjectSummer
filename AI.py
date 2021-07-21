@@ -1,15 +1,21 @@
 import numpy as np
 import pygame
 import math
+from Node import Node
 
 BLUE = (0, 0, 255)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
-
+RED_PLAYER = 1
+YELLOW_PLAYER = 2
 ROW_COUNT = 6
 COLUMN_COUNT = 7
 ConnectNum = 4
+ONE_VS_ONE = 0
+EASY = 2
+MEDIUM = 4
+HARD = 5
 
 
 def create_board():
@@ -140,10 +146,10 @@ def draw_board(screen, board):
 
     for c in range(COLUMN_COUNT):
         for r in range(ROW_COUNT):
-            if board[r][c] == 1:
+            if board[r][c] == RED_PLAYER:
                 pygame.draw.circle(screen, RED, (
                     int(c * SQUARE_SIZE + SQUARE_SIZE / 2), height - int(r * SQUARE_SIZE + SQUARE_SIZE / 2)), RADIUS)
-            elif board[r][c] == 2:
+            elif board[r][c] == YELLOW_PLAYER:
                 pygame.draw.circle(screen, YELLOW, (
                     int(c * SQUARE_SIZE + SQUARE_SIZE / 2), height - int(r * SQUARE_SIZE + SQUARE_SIZE / 2)), RADIUS)
     pygame.display.update()
@@ -156,7 +162,7 @@ size = (width, height)
 RADIUS = int(SQUARE_SIZE / 2 - 5)
 
 
-def play_game():
+def play_game(difficulty=ONE_VS_ONE):
     board = create_board()
 
     screen = pygame.display.set_mode(size)
@@ -176,8 +182,10 @@ def play_game():
             if event.type == pygame.MOUSEMOTION:
                 pygame.draw.rect(screen, WHITE, (0, 0, width, SQUARE_SIZE))
                 pos_x = event.pos[0]
+
                 if turn == 0:
-                    pygame.draw.circle(screen, RED, (pos_x, int(SQUARE_SIZE / 2)), RADIUS)
+                    if difficulty == ONE_VS_ONE:
+                        pygame.draw.circle(screen, RED, (pos_x, int(SQUARE_SIZE / 2)), RADIUS)
                 else:
                     pygame.draw.circle(screen, YELLOW, (pos_x, int(SQUARE_SIZE / 2)), RADIUS)
             pygame.display.update()
@@ -186,14 +194,28 @@ def play_game():
                 pygame.draw.rect(screen, WHITE, (0, 0, width, SQUARE_SIZE))
                 # Ask for Player 1 Input
                 if turn == 0:
-                    pos_x = event.pos[0]
-                    col = int(math.floor(pos_x / SQUARE_SIZE))
+                    if difficulty == ONE_VS_ONE:
+                        pos_x = event.pos[0]
+                        col = int(math.floor(pos_x / SQUARE_SIZE))
+                    else:
+                        origin = Node(-1000, board, 0)
+                        f = alpha_beta(origin, difficulty, -1000, +1000, True)
+                        to_play_col = 0
+                        for col in range(len(origin.child)):
+                            if origin.child[col].v == f:
+                                to_play_col = origin.child[col].col
+                                break
+                            else:
+                                print(origin.child[col].v)
+                        print(" F is {0} And col is {1} and v is {2} number of leafs is {3}".format(f,
+                                                                                                    len(origin.child),
+                                                                                                    origin.child[col].v,
+                                                                                                    count_tree(origin)))
+                    if is_valid_location(board, to_play_col):
+                        row = get_next_open_row(board, to_play_col)
+                        drop_piece(board, row, to_play_col, RED_PLAYER)
 
-                    if is_valid_location(board, col):
-                        row = get_next_open_row(board, col)
-                        drop_piece(board, row, col, 1)
-
-                        if winning_move(board, 1):
+                        if winning_move(board, RED_PLAYER):
                             label = my_font.render("Player 1 wins!", True, RED)
                             screen.blit(label, (40, 10))
                             game_over = True
@@ -207,9 +229,9 @@ def play_game():
 
                     if is_valid_location(board, col):
                         row = get_next_open_row(board, col)
-                        drop_piece(board, row, col, 2)
+                        drop_piece(board, row, col, YELLOW_PLAYER)
 
-                        if winning_move(board, 2):
+                        if winning_move(board, YELLOW_PLAYER):
                             label = my_font.render("Player 2 wins!", True, YELLOW)
                             screen.blit(label, (40, 10))
                             game_over = True
@@ -223,3 +245,59 @@ def play_game():
             if game_over:
                 pygame.time.wait(3000)
                 pygame.display.quit()
+
+
+def alpha_beta(root, depth, a=-1000, b=1000, max_player=True):
+    to_play = RED_PLAYER if max_player else YELLOW_PLAYER
+    if winning_move(root.board, to_play):
+        if to_play == RED_PLAYER:
+            return 100
+        else:
+            return -100
+    if depth == 0:
+        return heuristic(root.board, RED_PLAYER) - heuristic(root.board, YELLOW_PLAYER)
+    if max_player:
+        root.v = -1000000
+        i=0
+        for col in range(7):
+            if is_valid_location(root.board, col):
+                row = get_next_open_row(root.board, col)
+                b1 = np.copy(root.board)
+                drop_piece(b1, row, col, RED_PLAYER)
+                # print("Max")
+                # print(b1)
+                root.addToTree(root.v, b1, col)
+                root.v = max(root.v, alpha_beta(root.child[i], depth - 1, a, b, False))
+                i += 1
+                a = max(a, root.v)
+            if b <= a:
+                break
+        return root.v
+    else:
+        root.v = 1000000
+        col = 0
+        for i in range(7):
+            if is_valid_location(root.board, i):
+                row = get_next_open_row(root.board, i)
+                b1 = np.copy(root.board)
+                drop_piece(b1, row, i, YELLOW_PLAYER)
+                # print("Min")
+                # print(b1)
+                root.addToTree(root.v, b1, i)
+                root.v = min(root.v, alpha_beta(root.child[col], depth - 1, a, b, True))
+                col += 1
+                b = min(b, root.v)
+            if b <= a:
+                break
+        return root.v
+
+
+def count_tree(root):
+    if root is None:
+        return 0
+    if root.child is None:
+        return 1
+    sum = 0
+    for node in root.child:
+        sum += count_tree(node)
+    return 1+sum

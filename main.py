@@ -18,7 +18,12 @@ def backward(main_label, widget):
 def choose_level(lev):
     global level
     level = lev
-    print(level)
+    if level == "Easy":
+        play_game(EASY)
+    elif level == "Medium":
+        play_game(MEDIUM)
+    else:
+        play_game(HARD)
 
 
 def show_levels_dialog(main_label):
