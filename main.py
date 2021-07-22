@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter.ttk import Combobox
 from PIL import ImageTk, Image
 from AI import *
-
+from Human import *
 
 title_font = ('Comic Sans MS', 23)
 font_tuple = ('Comic Sans MS', 12)
@@ -75,7 +75,7 @@ def run():
     ai = Button(choose_label, text='Play With Computer', font=font_tuple, pady=2, cursor='hand2', width=20,
                 command=lambda: show_levels_dialog(main_label))
     two_players = Button(choose_label, text='Play With Human', font=font_tuple, pady=2, cursor='hand2', width=20,
-                         command=play_game)
+                         command=play_game_h)
     ai.grid(column=0, row=0, padx=10, pady=10)
     two_players.grid(column=0, row=1, padx=10, pady=10)
 
