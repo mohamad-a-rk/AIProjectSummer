@@ -1,4 +1,5 @@
 from BoardFunctions import *
+from random import randint
 import math
 
 
@@ -9,8 +10,10 @@ def play_game_h():
     game_over = False
     draw_board(screen, board)
     pygame.display.update()
-    turn = RED_TURN
-    my_font = pygame.font.SysFont("monospace", 75)
+
+    turn = randint(RED_TURN, YELLOW_TURN)
+    my_font = pygame.font.SysFont('monospace', 75)
+
     while not game_over:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -21,7 +24,7 @@ def play_game_h():
                 pos_x = event.pos[0]
 
                 if turn == RED_TURN:
-                        pygame.draw.circle(screen, RED, (pos_x, int(SQUARE_SIZE / 2)), RADIUS)
+                    pygame.draw.circle(screen, RED, (pos_x, int(SQUARE_SIZE / 2)), RADIUS)
                 else:
                     pygame.draw.circle(screen, YELLOW, (pos_x, int(SQUARE_SIZE / 2)), RADIUS)
             pygame.display.update()
@@ -37,13 +40,13 @@ def play_game_h():
                         drop_piece(board, row, to_play_col, RED_PLAYER)
 
                         if winning_move(board, RED_PLAYER):
-                            label = my_font.render("Player 1 wins!", True, RED)
+                            label = my_font.render('Player 1 wins!', True, RED)
                             screen.blit(label, (40, 10))
                             game_over = True
                     else:
                         continue
 
-                # # Ask for Player 2 Input
+                # Ask for Player 2 Input
                 else:
                     pos_x = event.pos[0]
                     col = int(math.floor(pos_x / SQUARE_SIZE))
@@ -53,7 +56,7 @@ def play_game_h():
                         drop_piece(board, row, col, YELLOW_PLAYER)
 
                         if winning_move(board, YELLOW_PLAYER):
-                            label = my_font.render("Player 2 wins!", True, YELLOW)
+                            label = my_font.render('Player 2 wins!', True, YELLOW)
                             screen.blit(label, (40, 10))
                             game_over = True
                     else:
@@ -64,5 +67,6 @@ def play_game_h():
                 turn = turn % 2
 
             if game_over:
-                pygame.time.wait(3000)
+                pygame.time.wait(5000)
+
                 pygame.display.quit()

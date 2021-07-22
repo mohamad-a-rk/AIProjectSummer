@@ -1,20 +1,25 @@
 import numpy as np
 import pygame
-from Node import Node
+
 BLUE = (0, 0, 255)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
+
 RED_PLAYER = 1
 YELLOW_PLAYER = 2
+
 RED_TURN = 0
 YELLOW_TURN = 1
+
 ROW_COUNT = 6
 COLUMN_COUNT = 7
 ConnectNum = 4
+
 EASY = 2
 MEDIUM = 4
-HARD = 5
+HARD = 6
+
 SQUARE_SIZE = 100
 width = COLUMN_COUNT * SQUARE_SIZE
 height = (ROW_COUNT + 1) * SQUARE_SIZE
@@ -144,10 +149,10 @@ def count_tree(root):
         return 0
     if root.child is None:
         return 1
-    sum = 0
+    summation = 0
     for node in root.child:
-        sum += count_tree(node)
-    return 1+sum
+        summation += count_tree(node)
+    return summation + 1
 
 
 def draw_board(screen, board):
