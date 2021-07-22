@@ -29,7 +29,7 @@ def play_game(difficulty=EASY):
             pygame.display.update()
 
             if turn == RED_TURN:
-                pygame.time.wait(1500)
+                pygame.time.wait(500)
                 origin = Node(-1000, board, 0)
                 f = alpha_beta(origin, difficulty, np.NINF, np.Inf, True)
                 to_play_col = next_move(origin, f)
