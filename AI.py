@@ -1,6 +1,8 @@
 import math
 from BoardFunctions import *
 import pygame
+from Node import Node
+from random import randint
 
 
 def play_game(difficulty=EASY):
@@ -10,8 +12,10 @@ def play_game(difficulty=EASY):
     game_over = False
     draw_board(screen, board)
     pygame.display.update()
-    turn = RED_TURN
-    my_font = pygame.font.SysFont("monospace", 75)
+
+    turn = randint(RED_TURN, YELLOW_TURN)
+    my_font = pygame.font.SysFont('monospace', 75)
+
     while not game_over:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -23,6 +27,7 @@ def play_game(difficulty=EASY):
                 if turn == YELLOW_TURN:
                     pygame.draw.circle(screen, YELLOW, (pos_x, int(SQUARE_SIZE / 2)), RADIUS)
             pygame.display.update()
+
             if turn == RED_TURN:
                 pygame.time.wait(1500)
                 origin = Node(-1000, board, 0)
@@ -33,7 +38,7 @@ def play_game(difficulty=EASY):
                     drop_piece(board, row, to_play_col, RED_PLAYER)
 
                     if winning_move(board, RED_PLAYER):
-                        label = my_font.render("Player 1 wins!", True, RED)
+                        label = my_font.render('Player 1 wins!', True, RED)
                         screen.blit(label, (40, 10))
                         game_over = True
                 else:
@@ -41,6 +46,7 @@ def play_game(difficulty=EASY):
                 draw_board(screen, board)
                 turn += 1
                 turn = turn % 2
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pygame.draw.rect(screen, WHITE, (0, 0, width, SQUARE_SIZE))
                 # # Ask for Player 2 Input
@@ -53,7 +59,7 @@ def play_game(difficulty=EASY):
                         drop_piece(board, row, col, YELLOW_PLAYER)
 
                         if winning_move(board, YELLOW_PLAYER):
-                            label = my_font.render("Player 2 wins!", True, YELLOW)
+                            label = my_font.render('Player 2 wins!', True, YELLOW)
                             screen.blit(label, (40, 10))
                             game_over = True
                     else:
@@ -64,19 +70,22 @@ def play_game(difficulty=EASY):
                 turn = turn % 2
 
             if game_over:
-                pygame.time.wait(3000)
+                pygame.time.wait(5000)
                 pygame.display.quit()
 
 
 def alpha_beta(root, depth, a=np.NINF, b=np.Inf, max_player=True):
     to_play = RED_PLAYER if max_player else YELLOW_PLAYER
+
     if winning_move(root.board, to_play):
         if to_play == RED_PLAYER:
             return 100
         else:
             return -100
+
     if depth == 0:
         return heuristic(root.board, RED_PLAYER) - heuristic(root.board, YELLOW_PLAYER)
+
     if max_player:
         root.v = np.NINF
         i = 0
@@ -87,13 +96,14 @@ def alpha_beta(root, depth, a=np.NINF, b=np.Inf, max_player=True):
                 drop_piece(b1, row, col, RED_PLAYER)
                 # print("Max")
                 # print(b1)
-                root.addToTree(root.v, b1, col)
+                root.add_to_tree(root.v, b1, col)
                 root.v = max(root.v, alpha_beta(root.child[i], depth - 1, a, b, False))
                 i += 1
                 a = max(a, root.v)
             if b <= a:
                 break
         return root.v
+
     else:
         root.v = np.Inf
         i = 0
@@ -104,7 +114,7 @@ def alpha_beta(root, depth, a=np.NINF, b=np.Inf, max_player=True):
                 drop_piece(b1, row, col, YELLOW_PLAYER)
                 # print("Min")
                 # print(b1)
-                root.addToTree(root.v, b1, col)
+                root.add_to_tree(root.v, b1, col)
                 root.v = min(root.v, alpha_beta(root.child[i], depth - 1, a, b, True))
                 i += 1
                 b = min(b, root.v)

@@ -7,6 +7,10 @@ from Human import *
 title_font = ('Comic Sans MS', 23)
 font_tuple = ('Comic Sans MS', 12)
 
+EASY = 2
+MEDIUM = 4
+HARD = 6
+
 
 def backward(main_label, widget):
     main_label.grid_forget()
