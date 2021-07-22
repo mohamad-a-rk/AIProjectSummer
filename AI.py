@@ -49,7 +49,7 @@ def play_game(difficulty=EASY):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pygame.draw.rect(screen, WHITE, (0, 0, width, SQUARE_SIZE))
-                # # Ask for Player 2 Input
+                # Ask for Player 2 Input
                 if turn == YELLOW_TURN:
                     pos_x = event.pos[0]
                     col = int(math.floor(pos_x / SQUARE_SIZE))
