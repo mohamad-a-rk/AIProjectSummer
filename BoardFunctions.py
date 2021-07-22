@@ -46,6 +46,16 @@ def get_next_open_row(board, col):
             return r
 
 
+def is_filled(board):
+    filled = True
+    print(board)
+    for col in range(COLUMN_COUNT):
+        for row in range(ROW_COUNT):
+            if board[row][col] == 0:
+                filled = False
+    return filled
+
+
 def print_board(board):
     print(np.flip(board, 0))
 

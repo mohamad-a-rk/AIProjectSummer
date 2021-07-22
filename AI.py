@@ -65,6 +65,11 @@ def play_game(difficulty=EASY):
                     else:
                         continue
 
+                if is_filled(board):
+                    label = my_font.render('Tie!', True, BLUE)
+                    screen.blit(label, (width / 2 - 60, 10))
+                    game_over = True
+
                 draw_board(screen, board)
                 turn += 1
                 turn = turn % 2
