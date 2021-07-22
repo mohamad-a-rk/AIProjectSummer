@@ -62,11 +62,15 @@ def play_game_h():
                     else:
                         continue
 
+                if is_filled(board):
+                    label = my_font.render('Tie!', True, BLUE)
+                    screen.blit(label, (width / 2 - 60, 10))
+                    game_over = True
+
                 draw_board(screen, board)
                 turn += 1
                 turn = turn % 2
 
             if game_over:
                 pygame.time.wait(5000)
-
                 pygame.display.quit()
