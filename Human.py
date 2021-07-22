@@ -68,4 +68,5 @@ def play_game_h():
 
             if game_over:
                 pygame.time.wait(5000)
+
                 pygame.display.quit()
