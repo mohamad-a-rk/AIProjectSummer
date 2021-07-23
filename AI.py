@@ -93,36 +93,32 @@ def alpha_beta(root, depth, a=np.NINF, b=np.Inf, max_player=True):
 
     if max_player:
         root.v = np.NINF
-        i = 0
+        root.a = a
+        root.b = b
         for col in range(7):
             if is_valid_location(root.board, col):
                 row = get_next_open_row(root.board, col)
                 b1 = np.copy(root.board)
                 drop_piece(b1, row, col, RED_PLAYER)
-                # print("Max")
-                # print(b1)
-                root.add_to_tree(root.v, b1, col)
-                root.v = max(root.v, alpha_beta(root.child[i], depth - 1, a, b, False))
-                i += 1
-                a = max(a, root.v)
-            if b <= a:
+                root.add_to_tree(root.v, b1, col, root.a, root.b)
+                root.v = max(root.v, alpha_beta(root.child[-1], depth - 1, root.a, root.b, False))
+                root.a = max(root.a, root.v)
+            if root.b <= root.a:
                 break
         return root.v
 
     else:
         root.v = np.Inf
-        i = 0
+        root.a = a
+        root.b = b
         for col in range(7):
             if is_valid_location(root.board, col):
                 row = get_next_open_row(root.board, col)
                 b1 = np.copy(root.board)
                 drop_piece(b1, row, col, YELLOW_PLAYER)
-                # print("Min")
-                # print(b1)
-                root.add_to_tree(root.v, b1, col)
-                root.v = min(root.v, alpha_beta(root.child[i], depth - 1, a, b, True))
-                i += 1
-                b = min(b, root.v)
-            if b <= a:
+                root.add_to_tree(root.v, b1, col, root.a, root.b)
+                root.v = min(root.v, alpha_beta(root.child[-1], depth - 1, root.a, root.b, True))
+                root.b = min(root.b, root.v)
+            if root.b <= root.a:
                 break
         return root.v

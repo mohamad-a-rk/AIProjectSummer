@@ -17,7 +17,7 @@ COLUMN_COUNT = 7
 ConnectNum = 4
 
 EASY = 2
-MEDIUM = 3
+MEDIUM = 4
 HARD = 5
 
 SQUARE_SIZE = 100
@@ -48,7 +48,6 @@ def get_next_open_row(board, col):
 
 def is_filled(board):
     filled = True
-    print(board)
     for col in range(COLUMN_COUNT):
         for row in range(ROW_COUNT):
             if board[row][col] == 0:
