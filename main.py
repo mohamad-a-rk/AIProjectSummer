@@ -8,7 +8,7 @@ title_font = ('Comic Sans MS', 23)
 font_tuple = ('Comic Sans MS', 12)
 
 EASY = 2
-MEDIUM = 3
+MEDIUM = 4
 HARD = 5
 
 
